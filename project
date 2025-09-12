@@ -1,0 +1,10 @@
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  role: { type: String, enum: ["resident", "collector", "recycler"], required: true },
+  phone: { type: String, required: true },
+  location: { type: String } // later replace with GPS coordinates
+});
+
+module.exports = mongoose.model("User", userSchema);

@@ -1,0 +1,36 @@
+const express = require("express");
+const WasteRequest = require("../models/WasteRequest");
+const router = express.Router();
+
+// Create new waste pickup request
+router.post("/", async (req, res) => {
+  try {
+    const request = new WasteRequest(req.body);
+    await request.save();
+    res.json(request);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Get all pending waste requests
+router.get("/", async (req, res) => {
+  const requests = await WasteRequest.find().populate("user");
+  res.json(requests);
+});
+
+// Mark request as collected
+router.put("/:id/collect", async (req, res) => {
+  try {
+    const request = await WasteRequest.findByIdAndUpdate(
+      req.params.id,
+      { status: "collected" },
+      { new: true }
+    );
+    res.json(request);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+module.exports = router;
